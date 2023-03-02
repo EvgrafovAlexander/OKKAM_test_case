@@ -115,6 +115,12 @@ class TestAudiencesReader(unittest.TestCase):
         result = await audiences_reader.get_percent_data("Age = 102", "Age in (102, 103)")
         self.assertListEqual(result, expected)
 
+    @async_test
+    async def test_get_percent_not_exist_group(self):
+        expected = [{"percent": 100.0}]
+        result = await audiences_reader.get_percent_data("Age = 130", "Age = 140")
+        self.assertListEqual(result, expected)
+
 
 if __name__ == "__main__":
     unittest.main()

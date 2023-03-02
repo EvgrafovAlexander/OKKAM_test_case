@@ -1,11 +1,8 @@
-# stdlib
-from typing import List
-
 # project
 from web.readers import audiences_reader
 
 
-async def get_percent_data(first_condition: str, second_condition: str) -> List[dict]:
+async def get_percent_data(first_condition: str, second_condition: str) -> dict:
     """
     Вычисляет процент вхождения второй аудитории в первую
 
@@ -14,4 +11,5 @@ async def get_percent_data(first_condition: str, second_condition: str) -> List[
 
     :return: % вхождения второй аудитории в первую
     """
-    return await audiences_reader.get_percent_data(first_condition, second_condition)
+    percent_data = await audiences_reader.get_percent_data(first_condition, second_condition)
+    return percent_data[0]
