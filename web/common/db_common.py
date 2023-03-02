@@ -79,27 +79,6 @@ async def execute_multiple(sql_params_list: List[Tuple[str, List[dict]]]) -> int
     return rowcount
 
 
-async def execute(sql: str, params: dict) -> int:
-    rowcount = 0
-    query, positional_args = format_to_pg_sql(sql, params)
-
-    pool = await postgres_connector.get_pool()
-    if not pool:
-        return 0
-    async with pool.acquire() as conn:
-        status = await conn.execute(query, *positional_args)
-        rowcount = pg_parse_rowcount(status)
-    return rowcount
-
-
-def pg_parse_rowcount(status: int) -> int:
-    rowcount = 0
-    status_splitted = status.split(" ")
-    if len(status_splitted) > 1:
-        rowcount = int(status_splitted[-1])
-    return rowcount
-
-
 def async_test(func):
     def wrapper(*args, **kwargs):
         coro = asyncio.coroutine(func)
