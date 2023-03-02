@@ -22,5 +22,4 @@ async def get_percent_data(first_condition: str, second_condition: str):
     left join group_2 on group_2.respondent = group_1.respondent
     """
     params = {}
-    res = await db_common.get_data(sql, params)
-    return res
+    return await db_common.get_data(sql, params)
