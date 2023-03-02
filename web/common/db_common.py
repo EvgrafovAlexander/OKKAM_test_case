@@ -1,6 +1,6 @@
+import collections
 import re
 import itertools
-import collections
 
 from typing import Dict, Any, Tuple, List
 
