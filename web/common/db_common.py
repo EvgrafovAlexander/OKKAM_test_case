@@ -1,9 +1,7 @@
 import collections
-import re
 import itertools
-
-from typing import Any, Dict, Tuple, List
-
+import re
+from typing import Any, Dict, List, Tuple
 
 from web.common import postgres_connector
 
@@ -28,7 +26,7 @@ def format_to_pg_sql(query: str, named_args: Dict[str, Any]) -> Tuple[str, List[
     positional_map = collections.defaultdict(lambda: "${}".format(next(positional_generator)))
     formatted_query = query % positional_map
     positional_items = sorted(
-       positional_map.items(),
+        positional_map.items(),
         key=lambda item: int(item[1].replace("$", "")),
     )
     positional_args = [named_args[named_arg] for named_arg, _ in positional_items]
@@ -43,8 +41,6 @@ async def get_data(sql: str, params: dict):
     if not pool:
         return []
     async with pool.acquire() as conn:
-        await conn.set_type_codec(
-            "numeric", encoder=str, decoder=float, schema="pg_catalog", format="text"
-        )
+        await conn.set_type_codec("numeric", encoder=str, decoder=float, schema="pg_catalog", format="text")
         records = await conn.fetch(query, *positional_args)
         return [dict(record) for record in records]
