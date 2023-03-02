@@ -21,8 +21,8 @@ async def get_percent_data(first_condition: str, second_condition: str) -> List[
         where {second_condition}
         group by respondent
     )
-    select 
-        case 
+    select
+        case
             when sum(avg_weight_1) is null then 100.0
             when sum(avg_weight_2) is null then 0.0
             else 100 * sum(avg_weight_2) / sum(avg_weight_1)

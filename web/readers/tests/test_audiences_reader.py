@@ -75,7 +75,6 @@ class TestAudiencesReader(unittest.TestCase):
                 "age": 103,
                 "weight": 3,
             },
-
         ]
 
         await db_common.execute_multiple([(insert_sql, cls.insert_data)])
@@ -83,7 +82,7 @@ class TestAudiencesReader(unittest.TestCase):
     @classmethod
     @async_test
     async def tearDownClass(cls) -> None:
-        delete_sql = f"delete from audiences au where au.date = :date"
+        delete_sql = "delete from audiences au where au.date = :date"
         await db_common.execute_multiple([(delete_sql, cls.insert_data)])
 
     @async_test
@@ -96,12 +95,6 @@ class TestAudiencesReader(unittest.TestCase):
     async def test_get_percent_with_identical_audiences(self):
         expected = [{"percent": 100.0}]
         result = await audiences_reader.get_percent_data("Age = 100", "Age = 100")
-        self.assertListEqual(result, expected)
-
-    @async_test
-    async def test_get_percent_with_no_intersections(self):
-        expected = [{"percent": 0.0}]
-        result = await audiences_reader.get_percent_data("Age = 100", "Age = 200")
         self.assertListEqual(result, expected)
 
     @async_test

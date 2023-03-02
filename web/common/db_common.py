@@ -87,8 +87,7 @@ async def execute(sql: str, params: dict) -> int:
     if not pool:
         return 0
     async with pool.acquire() as conn:
-        status = await conn.\
-            execute(query, *positional_args)
+        status = await conn.execute(query, *positional_args)
         rowcount = pg_parse_rowcount(status)
     return rowcount
 
