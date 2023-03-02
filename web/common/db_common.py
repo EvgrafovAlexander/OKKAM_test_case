@@ -1,8 +1,11 @@
+# stdlib
+import asyncio
 import collections
 import itertools
 import re
 from typing import Any, Dict, List, Tuple
 
+# project
 from web.common import postgres_connector
 
 
@@ -44,3 +47,65 @@ async def get_data(sql: str, params: dict):
         await conn.set_type_codec("numeric", encoder=str, decoder=float, schema="pg_catalog", format="text")
         records = await conn.fetch(query, *positional_args)
         return [dict(record) for record in records]
+
+
+async def execute_multiple(sql_params_list: List[Tuple[str, List[dict]]]) -> int:
+    rowcount = 0  # executemany return None
+
+    prepared_queries: List[Tuple[str, List[tuple]]] = []
+    for sql_params in sql_params_list:
+        sql = sql_params[0]
+        param_rows = sql_params[1]
+
+        query = sql
+        query_values: List[tuple] = []
+        for params in param_rows:
+            query, positional_args = format_to_pg_sql(sql, params)
+            query_values.append(tuple(positional_args))
+            rowcount += 1
+
+        prepared_queries.append((query, query_values))
+
+    pool = await postgres_connector.get_pool()
+    if not pool:
+        return 0
+    async with pool.acquire() as conn:
+        await conn.set_type_codec("numeric", encoder=str, decoder=float, schema="pg_catalog", format="text")
+        async with conn.transaction():
+            for prepared_query in prepared_queries:
+                query = prepared_query[0]
+                values = prepared_query[1]
+                await conn.executemany(query, values)
+    return rowcount
+
+
+async def execute(sql: str, params: dict) -> int:
+    rowcount = 0
+    query, positional_args = format_to_pg_sql(sql, params)
+
+    pool = await postgres_connector.get_pool()
+    if not pool:
+        return 0
+    async with pool.acquire() as conn:
+        status = await conn.\
+            execute(query, *positional_args)
+        rowcount = pg_parse_rowcount(status)
+    return rowcount
+
+
+def pg_parse_rowcount(status: int) -> int:
+    rowcount = 0
+    status_splitted = status.split(" ")
+    if len(status_splitted) > 1:
+        rowcount = int(status_splitted[-1])
+    return rowcount
+
+
+def async_test(func):
+    def wrapper(*args, **kwargs):
+        coro = asyncio.coroutine(func)
+        future = coro(*args, **kwargs)
+        loop = asyncio.get_event_loop()
+        loop.run_until_complete(future)
+
+    return wrapper
