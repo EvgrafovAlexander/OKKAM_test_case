@@ -1,8 +1,8 @@
 # thirdparty
 from fastapi import APIRouter, Query
 
-from web.data import percent_data
 # project
+from web.data import percent_data
 from web.models import percent_model
 
 router = APIRouter()
