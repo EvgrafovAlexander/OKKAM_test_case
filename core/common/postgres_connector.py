@@ -13,7 +13,7 @@ async def get_pool():
             user="postgres",
             password="postgres",
             database="postgres",
-            host="localhost",
+            host="0.0.0.0",
             port=5438,
             max_inactive_connection_lifetime=200,
             min_size=1,
