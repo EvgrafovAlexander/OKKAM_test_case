@@ -18,9 +18,16 @@ docker run -p 80:80 okkam_api
 
 docker run -p 80:80 --network db_postgres_default --name okkam okkam_api
 
-docker network okkam-net
+docker network create okkam-net
 docker network rm okkam-net    
 
 docker network connect okkam-net okkam_api
 
-docker network connect db_postgres_default okkam_api
+docker network connect db_postgres_default api_okkam
+
+
+docker inspect db_okkam | grep '"IPAddress"' | head -n 1
+
+docker inspect <containerNameOrId>
+
+docker network ls

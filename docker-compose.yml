@@ -7,6 +7,8 @@ services:
       environment:
         - POSTGRES_USER=postgres
         - POSTGRES_PASSWORD=postgres
+      networks:
+        - okkam-net
       logging:
         options:
           max-size: 10m
@@ -17,3 +19,20 @@ services:
         - ./scripts/db_postgres/postgres-data:/var/lib/postgresql/data
         # copy the sql script to create tables
         - ./scripts/db_postgres/sql/create_tables.sql:/docker-entrypoint-initdb.d/create_tables.sql
+
+    api:
+      build:
+        dockerfile: api.Dockerfile
+      container_name: api_okkam
+      restart: always
+      ports:
+        - '80:80'
+      links:
+        - "postgres:database"
+      networks:
+        - okkam-net
+      depends_on:
+        - postgres
+
+networks:
+  okkam-net:
