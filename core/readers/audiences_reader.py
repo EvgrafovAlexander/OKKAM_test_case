@@ -1,4 +1,3 @@
-# stdlib
 from typing import List
 
 # project
