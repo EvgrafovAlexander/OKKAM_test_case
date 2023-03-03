@@ -1,5 +1,4 @@
 -- Creation of audiences table
-
 CREATE TABLE audiences (
     date      DATE             NOT NULL,
     respondent INT             NOT NULL,

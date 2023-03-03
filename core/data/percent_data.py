@@ -9,7 +9,7 @@ async def get_percent_data(first_condition: str, second_condition: str) -> dict:
     :param first_condition: Условие получения первой аудитории
     :param second_condition: Условие получения второй аудитории
 
-    :return: % вхождения второй аудитории в первую
+    :return: результат в % вхождения второй аудитории в первую
     """
     percent_data = await audiences_reader.get_percent_data(first_condition, second_condition)
     return percent_data[0]

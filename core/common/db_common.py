@@ -49,7 +49,7 @@ async def get_data(sql: str, params: dict):
 
 
 async def execute_multiple(sql_params_list: List[Tuple[str, List[dict]]]) -> int:
-    rowcount = 0  # executemany return None
+    rowcount = 0
 
     prepared_queries: List[Tuple[str, List[tuple]]] = []
     for sql_params in sql_params_list:

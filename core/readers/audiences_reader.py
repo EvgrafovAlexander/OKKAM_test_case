@@ -6,6 +6,18 @@ from common import db_common
 
 
 async def get_percent_data(first_condition: str, second_condition: str) -> List[dict]:
+    """
+    Вычисляет процент вхождения второй аудитории в первую
+
+    :param first_condition: Условие получения первой аудитории
+    :param second_condition: Условие получения второй аудитории
+
+    1) Выделяется перечень респондентов для каждой из аудиторий,
+    вычисляется их средний вес;
+    2) Вычисляется процент вхождения второй аудитории в первую
+
+    :return: % вхождения второй аудитории в первую
+    """
     sql = f"""
     with group_1 as (
         select a.respondent,

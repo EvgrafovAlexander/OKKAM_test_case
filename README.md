@@ -9,3 +9,5 @@ docker-compose down
 docker-compose exec postgres psql --username=postgres --dbname=postgres
 
 pre-commit run --all-files
+
+docker build .
