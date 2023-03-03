@@ -31,3 +31,5 @@ docker inspect db_okkam | grep '"IPAddress"' | head -n 1
 docker inspect <containerNameOrId>
 
 docker network ls
+
+docker-compose down --volumes

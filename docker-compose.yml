@@ -19,6 +19,7 @@ services:
         - ./scripts/db_postgres/postgres-data:/var/lib/postgresql/data
         # copy the sql script to create tables
         - ./scripts/db_postgres/sql/create_tables.sql:/docker-entrypoint-initdb.d/create_tables.sql
+        - ./scripts/db_postgres/init_csv:/var/lib/postgresql/csvs
 
     api:
       build:
