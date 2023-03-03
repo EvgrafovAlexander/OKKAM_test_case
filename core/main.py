@@ -1,14 +1,14 @@
 # thirdparty
-from fastapi import FastAPI, Query
+from fastapi import FastAPI
 
 # project
-from web.controllers import index
+from controllers import index
 
 app = FastAPI()
 index.register_routes(app)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     # thirdparty
     import uvicorn
 

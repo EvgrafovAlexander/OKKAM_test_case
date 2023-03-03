@@ -1,11 +1,11 @@
-import re
-import itertools
+# stdlib
 import collections
+import itertools
+import re
+from typing import Any, Dict, List, Tuple
 
-from typing import Dict, Any, Tuple, List
-
-
-from web.common import postgres_connector
+# project
+from common import postgres_connector
 
 
 def __format_sql(sql: str):
@@ -28,7 +28,7 @@ def format_to_pg_sql(query: str, named_args: Dict[str, Any]) -> Tuple[str, List[
     positional_map = collections.defaultdict(lambda: "${}".format(next(positional_generator)))
     formatted_query = query % positional_map
     positional_items = sorted(
-       positional_map.items(),
+        positional_map.items(),
         key=lambda item: int(item[1].replace("$", "")),
     )
     positional_args = [named_args[named_arg] for named_arg, _ in positional_items]
@@ -43,8 +43,36 @@ async def get_data(sql: str, params: dict):
     if not pool:
         return []
     async with pool.acquire() as conn:
-        await conn.set_type_codec(
-            "numeric", encoder=str, decoder=float, schema="pg_catalog", format="text"
-        )
+        await conn.set_type_codec("numeric", encoder=str, decoder=float, schema="pg_catalog", format="text")
         records = await conn.fetch(query, *positional_args)
         return [dict(record) for record in records]
+
+
+async def execute_multiple(sql_params_list: List[Tuple[str, List[dict]]]) -> int:
+    rowcount = 0
+
+    prepared_queries: List[Tuple[str, List[tuple]]] = []
+    for sql_params in sql_params_list:
+        sql = sql_params[0]
+        param_rows = sql_params[1]
+
+        query = sql
+        query_values: List[tuple] = []
+        for params in param_rows:
+            query, positional_args = format_to_pg_sql(sql, params)
+            query_values.append(tuple(positional_args))
+            rowcount += 1
+
+        prepared_queries.append((query, query_values))
+
+    pool = await postgres_connector.get_pool()
+    if not pool:
+        return 0
+    async with pool.acquire() as conn:
+        await conn.set_type_codec("numeric", encoder=str, decoder=float, schema="pg_catalog", format="text")
+        async with conn.transaction():
+            for prepared_query in prepared_queries:
+                query = prepared_query[0]
+                values = prepared_query[1]
+                await conn.executemany(query, values)
+    return rowcount

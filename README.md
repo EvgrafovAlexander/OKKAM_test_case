@@ -1,9 +1,26 @@
-# OKKAM_test_case
+# OKKAM Test case
 
-docker-compose --force-recreate --file docker-compose.yml up 
+Реализовано API с эндпоинтом GET '/getPercent', вычисляющим процент вхождения второй аудитории в первую.
+На вход эндпоинта приходят 2 параметра: *audience1* и *audience2*. 
+Аудитории приходят в формате SQL-синтаксиса, например, '*Age BETWEEN 18 AND 35*' или '*Sex = 2 AND Age >= 18*'.
 
-docker-compose down
+Для каждой из аудиторий:
+- выделяем из таблицы всех респондентов, подходящих под параметры;
+- находим среднее значение *Weight* респондента аудитории, сгруппировав их по уникальному номеру;
+- вычисляем процент вхождения второй аудитории в первую, основываясь на среднем *Weight*.
 
+Пример запроса:
+- http://localhost:80/getPercent?val=10.23&audience1=Age BETWEEN 18 AND 35&audience2=Sex = 2 AND Age >= 18
 
+Пример ответа:
+- "percent": 43.954413320834334
 
-docker-compose exec postgres psql --username=postgres --dbname=postgres
+## Запуск проекта
+1. Клонировать репозиторий;
+2. Для возможности заполнения БД поместить файл с табличными данными *OKKAM_Middle Python Developer_data.csv*
+в поддиректорию проекта *OKKAM_test_case/scripts/init_csv/*;
+3. В корневой директории проекта выполнить *docker-compose up*.
+
+Результатом сборки проекта являются docker-контейнеры:
+- db_okkam - БД PostgreSQL 15.2 с созданной и заполненной таблицей *audiences* (port 5432);
+- api_okkam - API, реализующее обращение к БД посредством обращения к эндпоинту (port 80).

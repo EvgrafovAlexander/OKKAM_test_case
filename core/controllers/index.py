@@ -1,5 +1,5 @@
 # project
-from web.controllers import percent_controller
+from controllers import percent_controller
 
 
 def register_routes(app):

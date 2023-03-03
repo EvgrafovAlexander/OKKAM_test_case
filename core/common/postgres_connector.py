@@ -5,6 +5,7 @@ _CONNECTION_POOL = None
 
 
 async def get_pool():
+    """Получение пула соединений"""
     global _CONNECTION_POOL
 
     if not _CONNECTION_POOL:
@@ -12,9 +13,10 @@ async def get_pool():
             user="postgres",
             password="postgres",
             database="postgres",
-            host="localhost",
-            port=5438
-            # max_inactive_connection_lifetime
-            # max_size
+            host="database",
+            port=5432,
+            max_inactive_connection_lifetime=200,
+            min_size=1,
+            max_size=50,
         )
     return _CONNECTION_POOL

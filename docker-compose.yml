@@ -1,0 +1,39 @@
+version: '3.8'
+services:
+    postgres:
+      image: postgres:15.2
+      container_name: db_okkam
+      restart: always
+      environment:
+        - POSTGRES_USER=postgres
+        - POSTGRES_PASSWORD=postgres
+      networks:
+        - okkam-net
+      logging:
+        options:
+          max-size: 10m
+          max-file: "3"
+      ports:
+        - '5438:5432'
+      volumes:
+        - ./scripts/db_postgres/postgres-data:/var/lib/postgresql/data
+        # copy the sql script to create tables
+        - ./scripts/db_postgres/sql/create_tables.sql:/docker-entrypoint-initdb.d/create_tables.sql
+        - ./scripts/db_postgres/init_csv:/var/lib/postgresql/csvs
+
+    api:
+      build:
+        dockerfile: api.Dockerfile
+      container_name: api_okkam
+      restart: always
+      ports:
+        - '80:80'
+      links:
+        - "postgres:database"
+      networks:
+        - okkam-net
+      depends_on:
+        - postgres
+
+networks:
+  okkam-net:
