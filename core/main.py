@@ -2,7 +2,7 @@
 from fastapi import FastAPI
 
 # project
-from web.controllers import index
+from controllers import index
 
 app = FastAPI()
 index.register_routes(app)

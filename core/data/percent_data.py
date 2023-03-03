@@ -1,5 +1,5 @@
 # project
-from web.readers import audiences_reader
+from readers import audiences_reader
 
 
 async def get_percent_data(first_condition: str, second_condition: str) -> dict:

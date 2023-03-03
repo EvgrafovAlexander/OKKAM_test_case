@@ -6,7 +6,7 @@ import re
 from typing import Any, Dict, List, Tuple
 
 # project
-from web.common import postgres_connector
+from common import postgres_connector
 
 
 def __format_sql(sql: str):

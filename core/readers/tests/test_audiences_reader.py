@@ -3,9 +3,9 @@ import datetime
 import unittest
 
 # project
-from web.common import db_common
-from web.common.db_common import async_test
-from web.readers import audiences_reader
+from common import db_common
+from common.db_common import async_test
+from readers import audiences_reader
 
 
 class TestAudiencesReader(unittest.TestCase):

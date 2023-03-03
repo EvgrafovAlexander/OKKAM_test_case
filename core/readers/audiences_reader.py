@@ -2,7 +2,7 @@
 from typing import List
 
 # project
-from web.common import db_common
+from common import db_common
 
 
 async def get_percent_data(first_condition: str, second_condition: str) -> List[dict]:
