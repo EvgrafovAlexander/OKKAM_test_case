@@ -14,10 +14,10 @@ services:
           max-size: 10m
           max-file: "3"
       ports:
-        - '5438:5432'
+        - '5432:5432'
       volumes:
         - ./scripts/db_postgres/postgres-data:/var/lib/postgresql/data
-        # copy the sql script to create tables
+        # копируем скрипт для создания и заполнения таблицы
         - ./scripts/db_postgres/sql/create_tables.sql:/docker-entrypoint-initdb.d/create_tables.sql
         - ./scripts/db_postgres/init_csv:/var/lib/postgresql/csvs
 
@@ -25,6 +25,8 @@ services:
       build:
         dockerfile: api.Dockerfile
       container_name: api_okkam
+      env_file:
+        - test.env
       restart: always
       ports:
         - '80:80'
