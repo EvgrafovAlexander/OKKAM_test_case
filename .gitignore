@@ -6,6 +6,7 @@ __pycache__/
 .idea
 /scripts/db_postgres/postgres-data
 /scripts/db_postgres/init_csv
+/scripts/redis/redis-data
 
 # C extensions
 *.so

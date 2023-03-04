@@ -32,10 +32,24 @@ services:
         - '80:80'
       links:
         - "postgres:database"
+        - "redis:cache"
       networks:
         - okkam-net
       depends_on:
         - postgres
+
+    redis:
+      image: redis:7.0.9-alpine
+      command: redis-server --requirepass redis
+      hostname: redis
+      container_name: redis
+      restart: unless-stopped
+      volumes:
+        - ./scripts/redis/redis-data:/data
+      ports:
+        - '6379:6379'
+      networks:
+        - okkam-net
 
 networks:
   okkam-net:

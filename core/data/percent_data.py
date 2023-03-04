@@ -1,7 +1,10 @@
 # project
+from common import configuration as cfg
+from common.redis import redis_cache
 from readers import audiences_reader
 
 
+@redis_cache(cfg.TTL.day)
 async def get_percent_data(first_condition: str, second_condition: str) -> dict:
     """
     Вычисляет процент вхождения второй аудитории в первую
